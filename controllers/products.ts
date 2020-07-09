@@ -95,4 +95,14 @@ let updateProduct = async ({ params, request, response }: { params: { id: string
         }
     }
 }
-export { getProducts, getProduct, addProduct, updateProduct };
+
+let deleteProduct = ({ params, response }: { params: { id: string }, response: any }) => {
+    products = products.filter(m => m.id != params.id);
+    response.status = 200;
+    response.body = {
+        success: true,
+        message: 'Product removed',
+        data: products
+    }
+}
+export { getProducts, getProduct, addProduct, updateProduct, deleteProduct };
