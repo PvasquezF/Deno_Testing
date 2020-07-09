@@ -1,6 +1,7 @@
-import { products } from '../products.ts';
+import { Products } from '../products.ts';
 import { Product } from '../types.ts';
 import { v4 } from 'https://deno.land/std/uuid/mod.ts';
+let products = Products;
 let getProducts = ({ response }: { response: any }) => {
     response.body = {
         success: true,
@@ -49,9 +50,49 @@ let addProduct = async ({ request, response }: { request: any, response: any }) 
         products.push(product);
         response.status = 201;
         response.body = {
-            success: false,
+            success: true,
             data: product
         }
     }
 }
-export { getProducts, getProduct, addProduct };
+
+
+let updateProduct = async ({ params, request, response }: { params: { id: string }, request: any, response: any }) => {
+    let product: Product | undefined = products.find(m => m.id == params.id);
+    console.log(product);
+    if (product) {
+        const body = await request.body();
+        if (!request.hasBody) {
+            response.status = 400;
+            response.body = {
+                success: false,
+                error: {
+                    name: 'NoDataFound',
+                    errors: [
+                        'No se ha encontrado el cuerpo de la petición'
+                    ]
+                }
+            }
+        } else {
+            const updatedData: { name?: string; description?: string; price?: number; } = body.value;
+            products = products.map(m => m.id == params.id ? { ...m, ...updatedData } : m);
+            response.status = 201;
+            response.body = {
+                success: true,
+                data: products
+            }
+        }
+    } else {
+        response.status = 404;
+        response.body = {
+            success: false,
+            error: {
+                name: 'ProductNotExists',
+                errors: [
+                    'Producto no encontrado'
+                ]
+            }
+        }
+    }
+}
+export { getProducts, getProduct, addProduct, updateProduct };

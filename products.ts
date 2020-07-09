@@ -1,5 +1,5 @@
 import { Product } from './types.ts';
-let products: Array<Product> = [
+let Products: Array<Product> = [
     {
         id: "1",
         name: "Product 1",
@@ -27,5 +27,5 @@ let products: Array<Product> = [
 ];
 
 export {
-    products
+    Products
 }
